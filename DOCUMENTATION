@@ -1,0 +1,59 @@
+# Business Requirements Document (BRD)
+
+## 1. Project Overview & Background
+Retail banking operations face a significant drop-off rate (up to 40%) during personal loan onboarding due to legacy, manual credit assessment cycles that take anywhere from 24 to 72 hours. This project introduces a digital Minimum Viable Product (MVP) to automate credit eligibility profiling.
+
+## 2. Business Objective
+- **Automate Underwriting:** Compress application evaluation cycles from hours to under 10 seconds.
+- **Data Integrity:** Eliminate self-reported debt errors by fetching real-time verification parameters directly from external credit bureau API integrations.
+- **Risk Control:** Protect the loan ledger bank by enforcing strict regulatory risk thresholds dynamically.
+
+## 3. Scope of Work
+- **In-Scope:** Digital application onboarding interface, real-time identity status validation, dynamic credit bureau score pull, automated asset calculation matrix, general ledger log routing.
+- **Out-of-Scope:** Core banking document uploads, human credit manager manual review panel, funds disbursement processing.
+
+
+#  Functional Requirements Document (FRD)
+
+## 1. System Integration Requirements
+The system must orchestrate data across four core environments on a 24/7 continuous cloud trigger matrix:
+- **System A (Ingestion UI):** Captures customer variables: `Full Name`, `Email Address`, `Reference ID`, `Monthly Salary`.
+- **System B (Verification API Engine):** Accepts `Reference ID` via secure JSON POST data payloads, returning identity matching confirmations.
+- **System C (Bureau API Engine):** Evaluates credit score values (`cibil_score`) and active monthly liabilities (`monthly_emi_outflow`).
+- **System D (General Ledger):** Writes system updates and calculated underwriting states into a persistent relational ledger array.
+
+## 2. Underwriting Business Logic Rules
+- **Rule 1 (CIBIL Score Boundary Check):** If incoming `cibil_score` is less than `700`, set `Eligibility Status` to `Rejected` and terminate calculation loops.
+- **Rule 2 (Fixed Obligation to Income Ratio Model):** If `cibil_score` is greater than or equal to `700`, calculate disposable capacity using an enforced **50% FOIR cap**:
+  `Available Monthly EMI Capacity = (Monthly Salary * 0.5) - Bureau Monthly Debt Obligations`
+- **Rule 3 (Tenure Multiplier Matrix):** Multiply the available capacity by a 12-month tenure index matrix to calculate the maximum approved credit boundary limits:
+  `Approved Credit Limit = Available Monthly EMI Capacity * 12`
+
+
+# Agile Backlog: User Stories & Acceptance Criteria
+
+### User Story 1: Automated Customer Ingestion Interface
+- **As a** prospective retail banking customer,
+- **I want to** submit my personal details and my identification tax number through a clean, intuitive interface,
+- **So that** I don't have to visit a physical bank branch to check my basic loan eligibility.
+- **Acceptance Criteria:**
+  - Verify that the system validates field formats (e.g., Email field must contain "@", Income fields must reject text characters).
+  - Confirm the system displays clear field-level placeholder data instructions to avoid user input confusion.
+
+### User Story 2: Live System Integration Gateway
+- **As a** Risk and Control Manager,
+- **I want the system to** cross-reference the applicant's input parameters with secure credit bureau registries automatically,
+- **So that** our credit evaluations rely completely on verified institutional datasets rather than manual customer inputs.
+- **Acceptance Criteria:**
+  - Verify the integration engine fires an instantaneous lookup trigger upon form submission.
+  - Ensure the JSON body payload structures are cleanly parsed into individual automation workflow parameters without system timeouts.
+
+### User Story 3: Core Underwriting Automation Ledger
+- **As a** Chief Financial Officer (CFO),
+- **I want the system to** calculate risk thresholds and instantly write final application metrics directly to the bank ledger,
+- **So that** management has complete visibility into total pipeline approvals and credit exposure distributions.
+- **Acceptance Criteria:**
+  - Verify that an applicant with a CIBIL score under 700 is instantly updated as "Rejected" with an approved limit value of 0.
+  - Confirm that approved limits are strictly calculated based on the regulatory 50% FOIR capacity limit matrix.
+
+
